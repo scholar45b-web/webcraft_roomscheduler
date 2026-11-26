@@ -113,6 +113,27 @@ CREATE TABLE Booking_Approval (
     REFERENCES `User`(User_ID) ON DELETE RESTRICT              -- keep who decided
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Stretch A (rows 6 and f6): facilities, drafted now, unused by the MVP
+CREATE TABLE Facility (
+  Facility_ID          INT AUTO_INCREMENT PRIMARY KEY,
+  Facility_Name        VARCHAR(100) NOT NULL UNIQUE,   -- e.g. 'Projector'
+  Facility_Type        VARCHAR(100) NOT NULL,          -- e.g. 'AV equipment'
+  Facility_Description VARCHAR(255) NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Junction table: which facilities each room has (many-to-many)
+CREATE TABLE Room_Facility (
+  Room_ID                INT          NOT NULL,
+  Facility_ID            INT          NOT NULL,
+  Room_Facility_Quantity INT          NOT NULL DEFAULT 1,
+  Room_Facility_Notes    VARCHAR(255) NULL,
+  PRIMARY KEY (Room_ID, Facility_ID),                  -- the PAIR is unique
+  CONSTRAINT fk_rf_room FOREIGN KEY (Room_ID)
+    REFERENCES Room(Room_ID) ON DELETE CASCADE,
+  CONSTRAINT fk_rf_facility FOREIGN KEY (Facility_ID)
+    REFERENCES Facility(Facility_ID) ON DELETE RESTRICT,
+  CONSTRAINT chk_rf_quantity CHECK (Room_Facility_Quantity > 0)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ---------------------------------------------------------------------
 -- Notes
