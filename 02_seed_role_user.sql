@@ -14,15 +14,22 @@
 
 -- Start clean so the file can be re-run. Children first, because of RESTRICT.
 SET FOREIGN_KEY_CHECKS = 0;
-TRUNCATE TABLE `User`;
-TRUNCATE TABLE `Role`;
-SET FOREIGN_KEY_CHECKS = 1;
 
+DELETE FROM `user`;
+ALTER TABLE `user` AUTO_INCREMENT = 1;
+
+-- Do the same if you are clearing `role` or other parent tables:
+DELETE FROM `role`;
+ALTER TABLE `role` AUTO_INCREMENT = 1;
+
+-- Your INSERT INTO statements go here...
+
+SET FOREIGN_KEY_CHECKS = 1;
 -- ---------------------------------------------------------------------
 -- Role  (Decided, row 4: Staff and Admin; Head Staff is stretch)
 -- Fixed IDs so other seed files and the code can rely on them.
 -- ---------------------------------------------------------------------
-INSERT INTO `Role` (Role_ID, Role_Name, Role_Description) VALUES
+INSERT INTO `role` (Role_ID, Role_Name, Role_Description) VALUES
   (1, 'Admin', 'Faculty administrator: manages staff accounts and rooms, approves or rejects booking requests'),
   (2, 'Staff', 'Faculty staff member: searches free rooms, submits and manages own booking requests');
 -- Stretch (decided, row 5): uncomment when Head Staff is built.
@@ -35,7 +42,7 @@ INSERT INTO `Role` (Role_ID, Role_Name, Role_Description) VALUES
 -- User_ID 3-8  : Active staff (use these to test booking, queues, clashes)
 -- User_ID 9    : Inactive staff (login must be refused)
 -- ---------------------------------------------------------------------
-INSERT INTO `User`
+INSERT INTO `user`
   (User_ID, User_Role_ID, User_Email, User_Full_Name, User_Password,
    User_Number_Phone, User_Account_Status, User_Created_At)
 VALUES
@@ -54,5 +61,5 @@ VALUES
 
 -- Keep AUTO_INCREMENT ahead of the fixed IDs, so the first account created
 -- from the Accounts page doesn't collide.
-ALTER TABLE `User` AUTO_INCREMENT = 10;
-ALTER TABLE `Role` AUTO_INCREMENT = 3;
+ALTER TABLE `user` AUTO_INCREMENT = 10;
+ALTER TABLE `role` AUTO_INCREMENT = 3;
